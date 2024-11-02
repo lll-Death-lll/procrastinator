@@ -22,6 +22,39 @@ class _HomeState extends State<Home> {
           IconButton(
               onPressed: () {
                 setState(() {
+                  tasks.sort((a, b) => a.id.compareTo(b.id));
+                });
+              },
+              icon: const Icon(
+                Icons.sort,
+                color: Colors.white,
+              )),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  tasks.sort((b, a) => a.id.compareTo(b.id));
+                });
+              },
+              icon: Transform.flip(
+                flipY: true,
+                child: const Icon(
+                  Icons.sort,
+                  color: Colors.white,
+                ),
+              )),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  tasks.sort((a, b) => a.name.compareTo(b.name));
+                });
+              },
+              icon: const Icon(
+                Icons.sort_by_alpha,
+                color: Colors.white,
+              )),
+          IconButton(
+              onPressed: () {
+                setState(() {
                   tasks = getAllTasks();
                 });
               },
