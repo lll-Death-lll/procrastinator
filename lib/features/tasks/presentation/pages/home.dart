@@ -17,6 +17,21 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  tasks = getAllTasks();
+                });
+              },
+              icon: const Icon(
+                Icons.replay,
+                color: Colors.white,
+              ))
+        ],
+        backgroundColor: Colors.grey[900],
+      ),
       backgroundColor: Colors.grey[850],
       floatingActionButton: TextButton.icon(
         onPressed: () async {
