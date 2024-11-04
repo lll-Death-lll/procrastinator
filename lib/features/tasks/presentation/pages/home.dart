@@ -16,8 +16,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Task> tasks = getAllTasks();
-  SortTasksBy sorting = SortTasksBy.id;
+  late List<Task> tasks;
+
+  @override
+  void initState() {
+    super.initState();
+    tasks = getAllTasks();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -15,8 +15,14 @@ class DailyTasks extends StatefulWidget {
 }
 
 class _DailyTasksState extends State<DailyTasks> {
-  List<Task> tasks = getDailyTasks();
+  late List<Task> tasks;
   SortTasksBy sorting = SortTasksBy.id;
+
+  @override
+  void initState() {
+    super.initState();
+    tasks = getDailyTasks();
+  }
 
   @override
   Widget build(BuildContext context) {
