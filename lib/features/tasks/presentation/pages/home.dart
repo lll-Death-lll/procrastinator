@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:procrastinator/features/tasks/domain/sort_tasks_by.dart';
+import 'package:procrastinator/features/tasks/domain/task_priority.dart';
+import 'package:procrastinator/features/tasks/domain/task_urgency.dart';
 import 'package:procrastinator/features/tasks/presentation/pages/add_task.dart';
 import 'package:procrastinator/features/tasks/data/data_sources/task.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
 import 'package:procrastinator/features/tasks/presentation/widgets/task_list.dart';
+import 'package:procrastinator/features/tasks/presentation/widgets/task_sort.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,45 +17,67 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Task> tasks = getAllTasks();
+  SortTasksBy sorting = SortTasksBy.id;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  tasks.sort((a, b) => a.id.compareTo(b.id));
-                });
-              },
-              icon: const Icon(
+          TaskSort(
+            icon: const Icon(Icons.sort),
+            onChanged: (sorting) {
+              setState(() {
+                switch (sorting) {
+                  case SortTasksBy.id:
+                    tasks.sortById();
+                    break;
+                  case SortTasksBy.name:
+                    tasks.sortByName();
+                    break;
+                  case SortTasksBy.priority:
+                    tasks.sortByPriority();
+                    break;
+                  case SortTasksBy.urgency:
+                    tasks.sortByUrgency();
+                    break;
+                  case SortTasksBy.eta:
+                    tasks.sortByETA();
+                    break;
+                }
+              });
+            },
+          ),
+          TaskSort(
+            icon: Transform.flip(
+              flipY: true,
+              child: const Icon(
                 Icons.sort,
                 color: Colors.white,
-              )),
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  tasks.sort((b, a) => a.id.compareTo(b.id));
-                });
-              },
-              icon: Transform.flip(
-                flipY: true,
-                child: const Icon(
-                  Icons.sort,
-                  color: Colors.white,
-                ),
-              )),
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  tasks.sort((a, b) => a.name.compareTo(b.name));
-                });
-              },
-              icon: const Icon(
-                Icons.sort_by_alpha,
-                color: Colors.white,
-              )),
+              ),
+            ),
+            onChanged: (sorting) {
+              setState(() {
+                switch (sorting) {
+                  case SortTasksBy.id:
+                    tasks.sortByIdReverse();
+                    break;
+                  case SortTasksBy.name:
+                    tasks.sortByNameReverse();
+                    break;
+                  case SortTasksBy.priority:
+                    tasks.sortByPriorityReverse();
+                    break;
+                  case SortTasksBy.urgency:
+                    tasks.sortByUrgencyReverse();
+                    break;
+                  case SortTasksBy.eta:
+                    tasks.sortByETAReverse();
+                    break;
+                }
+              });
+            },
+          ),
           IconButton(
               onPressed: () {
                 setState(() {

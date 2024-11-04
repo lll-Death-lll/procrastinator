@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:procrastinator/features/daily-tasks/presentation/pages/daily_tasks.dart';
 import 'package:procrastinator/features/tasks/presentation/pages/home.dart';
 import 'package:sqlite3/sqlite3.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Home(),
         '/martix': (context) => Container(),
-        '/daily': (context) => Container(),
+        '/daily': (context) => const DailyTasks(),
       },
     );
   }

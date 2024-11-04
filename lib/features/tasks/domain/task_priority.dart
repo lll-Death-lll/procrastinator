@@ -7,6 +7,16 @@ enum Priority {
   String toString() => name;
 }
 
+extension Utils on Priority {
+  int toInt() {
+    return Priority.values.indexOf(this);
+  }
+
+  int compareTo(Priority priority) {
+    return toInt() - priority.toInt();
+  }
+}
+
 extension StringToEnum on String {
   Priority toPriority() {
     switch (toLowerCase()) {

@@ -8,6 +8,16 @@ enum Category {
   String toString() => name;
 }
 
+extension Utils on Category {
+  int toInt() {
+    return Category.values.indexOf(this);
+  }
+
+  int compareTo(Category category) {
+    return toInt() - category.toInt();
+  }
+}
+
 extension StringToEnum on String {
   Category toCategory() {
     switch (toLowerCase()) {
