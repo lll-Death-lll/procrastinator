@@ -30,7 +30,10 @@ class _DailyTasksState extends State<DailyTasks> {
       appBar: AppBar(
         actions: [
           TaskSort(
-            icon: const Icon(Icons.sort),
+            icon: const Icon(
+              Icons.sort,
+              color: Colors.white,
+            ),
             onChanged: (sorting) {
               setState(() {
                 switch (sorting) {

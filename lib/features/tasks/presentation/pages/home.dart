@@ -28,7 +28,10 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         actions: [
           TaskSort(
-            icon: const Icon(Icons.sort),
+            icon: const Icon(
+              Icons.sort,
+              color: Colors.white,
+            ),
             onChanged: (sorting) {
               setState(() {
                 switch (sorting) {

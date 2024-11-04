@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:procrastinator/features/tasks/domain/sort_tasks_by.dart';
 
@@ -16,10 +17,15 @@ class _TaskSortState extends State<TaskSort> {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
-      child: DropdownButton<SortTasksBy>(
-          icon: widget.icon,
-          focusColor: Colors.transparent,
-          dropdownColor: Colors.grey[900],
+      child: DropdownButton2<SortTasksBy>(
+          customButton: widget.icon,
+          dropdownStyleData: DropdownStyleData(
+            width: 160,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: Colors.grey[900],
+            ),
+          ),
           items: const [
             DropdownMenuItem<SortTasksBy>(
                 value: SortTasksBy.id,
