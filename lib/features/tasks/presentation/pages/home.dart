@@ -25,7 +25,34 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        backgroundColor: Colors.grey[900],
+        child: Column(
+          children: [
+            ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    backgroundColor: Colors.red,
+                    overlayColor: Colors.black),
+                onPressed: () async {
+                  await Navigator.pushNamed(context, '/daily');
+                  setState(() {
+                    tasks = getAllTasks();
+                  });
+                },
+                label: const Text(
+                  'Daily',
+                  style: TextStyle(color: Colors.white),
+                ))
+          ],
+        ),
+      ),
       appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         actions: [
           TaskSort(
             icon: const Icon(

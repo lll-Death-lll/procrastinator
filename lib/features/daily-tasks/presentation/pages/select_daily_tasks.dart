@@ -1,49 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:procrastinator/features/daily-tasks/data/data_sources/daily_tasks.dart';
-import 'package:procrastinator/features/daily-tasks/presentation/pages/select_daily_tasks.dart';
-import 'package:procrastinator/features/tasks/data/data_sources/task.dart';
+import 'package:procrastinator/features/daily-tasks/presentation/widgets/task_card_rounded.dart';
 import 'package:procrastinator/features/tasks/domain/sort_tasks_by.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
-import 'package:procrastinator/features/tasks/presentation/widgets/task_list.dart';
 import 'package:procrastinator/features/tasks/presentation/widgets/task_sort.dart';
 
-class DailyTasks extends StatefulWidget {
-  const DailyTasks({super.key});
+class SelectDailyTasks extends StatefulWidget {
+  final List<Task> tasks;
+  final Set<int> selected;
+  const SelectDailyTasks(
+      {super.key, required this.tasks, required this.selected});
 
   @override
-  State<DailyTasks> createState() => _DailyTasksState();
+  State<SelectDailyTasks> createState() => _SelectDailyTasksState();
 }
 
-class _DailyTasksState extends State<DailyTasks> {
+class _SelectDailyTasksState extends State<SelectDailyTasks> {
   List<Task> tasks = [];
-  SortTasksBy sorting = SortTasksBy.id;
+  Set<int> selectedIds = {};
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      var daily = getDailyTasksIds();
-      if (daily.isEmpty) {
-        if (!mounted) return;
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    SelectDailyTasks(tasks: getAllTasks(), selected: daily)));
-        var dailyTasks = getDailyTasks();
-        if (dailyTasks.isEmpty) {
-          if (!mounted) return;
-          Navigator.pop(context);
-        }
-        setState(() {
-          tasks = dailyTasks;
-        });
-      } else {
-        setState(() {
-          tasks = getDailyTasks();
-        });
-      }
-    });
+    tasks = widget.tasks;
+    selectedIds = widget.selected;
   }
 
   @override
@@ -54,7 +34,7 @@ class _DailyTasksState extends State<DailyTasks> {
           color: Colors.white,
         ),
         title: const Text(
-          'Daily tasks',
+          'Select daily tasks',
           style: TextStyle(color: Colors.white),
         ),
         actions: [
@@ -115,51 +95,50 @@ class _DailyTasksState extends State<DailyTasks> {
               });
             },
           ),
-          IconButton(
-              onPressed: () async {
-                var daily = tasks.map((t) => t.id).toSet();
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SelectDailyTasks(
-                            tasks: getAllTasks(), selected: daily)));
-                setState(() {
-                  tasks = getDailyTasks();
-                });
-              },
-              icon: const Icon(
-                Icons.replay,
-                color: Colors.white,
-              ))
         ],
         backgroundColor: Colors.grey[900],
       ),
+      floatingActionButton: TextButton.icon(
+        onPressed: () async {
+          setDailyTasks(selectedIds);
+          Navigator.pop(context);
+        },
+        label: const Text(
+          'Choose selected',
+          style: TextStyle(color: Colors.white),
+        ),
+        icon: const Icon(
+          Icons.navigate_next,
+          color: Colors.white,
+        ),
+        style: TextButton.styleFrom(backgroundColor: Colors.deepPurple),
+      ),
       backgroundColor: Colors.grey[850],
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TaskList(
-          tasks: tasks,
-          onCheck: (index, completed) {
-            if (completed) {
-              completeTask(tasks[index].id);
-              setState(() {
-                tasks[index].completedAt = DateTime.now();
-              });
-            } else {
-              removeTaskCompletion(tasks[index].id);
-              setState(() {
-                tasks[index].completedAt = null;
-              });
-            }
-          },
-          onUpdate: (index, task) {
-            updateTask(task);
-            setState(() {
-              tasks[index] = task;
-            });
-          },
-        ),
-      ),
+          padding: const EdgeInsets.all(8.0),
+          child: ListView.separated(
+            itemCount: tasks.length,
+            itemBuilder: (BuildContext context, int index) {
+              return TaskCardRounded(
+                task: tasks[index],
+                isSelected: selectedIds.contains(tasks[index].id),
+                onCheck: (isChecked) {
+                  if (isChecked) {
+                    setState(() {
+                      selectedIds.add(tasks[index].id);
+                    });
+                  } else {
+                    setState(() {
+                      selectedIds.remove(tasks[index].id);
+                    });
+                  }
+                },
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) => Divider(
+              color: Colors.grey[600],
+            ),
+          )),
     );
   }
 }

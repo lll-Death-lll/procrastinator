@@ -41,6 +41,11 @@ Database setupApp() {
       completed_at TEXT,
       created_at TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS daily (
+      id INTEGER NOT NULL PRIMARY KEY,
+      daily_date TEXT NOT NULL UNIQUE,
+      tasks TEXT NOT NULL
+    );
   ''');
 
   return db;
