@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:core';
+
 import 'package:procrastinator/features/tasks/domain/task_category.dart';
 import 'package:procrastinator/features/tasks/domain/task_priority.dart';
 import 'package:procrastinator/features/tasks/domain/task_urgency.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart';
 
 class TaskModel {
   final int id;
@@ -27,12 +32,12 @@ class TaskModel {
   Map<String, Object?> toJson() => {
         TaskFields.id: id,
         TaskFields.name: name,
-        TaskFields.description: description,
+        TaskFields.description: description ?? '',
         TaskFields.category: category.toString(),
         TaskFields.priority: priority.toString(),
         TaskFields.urgency: urgency.toString(),
-        TaskFields.eta: eta.toString(),
-        TaskFields.completedAt: completedAt?.toIso8601String(),
+        TaskFields.eta: eta ?? '',
+        TaskFields.completedAt: completedAt?.toIso8601String() ?? '',
         TaskFields.createdAt: createdAt.toIso8601String()
       };
 
@@ -62,12 +67,9 @@ class TaskModel {
         id: json[TaskFields.id] as int,
         name: json[TaskFields.name] as String,
         description: json[TaskFields.description] as String?,
-        category: Category.values.firstWhere(
-            (e) => e.toString() == json[TaskFields.category] as String),
-        priority: Priority.values.firstWhere(
-            (e) => e.toString() == json[TaskFields.priority] as String),
-        urgency: Urgency.values.firstWhere(
-            (e) => e.toString() == json[TaskFields.urgency] as String),
+        category: (json[TaskFields.category] as String).toCategory(),
+        priority: (json[TaskFields.priority] as String).toPriority(),
+        urgency: (json[TaskFields.urgency] as String).toUrgency(),
         eta: int.tryParse(json[TaskFields.eta] as String? ?? ''),
         completedAt: DateTime.tryParse(
           (json[TaskFields.completedAt] as String? ?? ''),
@@ -111,6 +113,52 @@ class TaskFields {
   ];
 }
 
+class DailyModel {
+  final int id;
+  final DateTime? dailyDate;
+  final Set<int> tasks;
+  DailyModel({
+    required this.id,
+    this.dailyDate,
+    required this.tasks,
+  });
+
+  Map<String, Object?> toJson() => {
+        DailyFields.id: id,
+        DailyFields.dailyDate: dailyDate?.toIso8601String() ?? "DATE('now')",
+        DailyFields.tasks: jsonEncode(tasks),
+      };
+
+  DailyModel copy({
+    int? id,
+    DateTime? dailyDate,
+    Set<int>? tasks,
+  }) =>
+      DailyModel(
+          id: id ?? this.id,
+          dailyDate: dailyDate ?? this.dailyDate,
+          tasks: tasks ?? this.tasks);
+
+  factory DailyModel.fromJson(Map<String, Object?> json) => DailyModel(
+        id: json[DailyFields.id] as int,
+        dailyDate: DateTime.parse([DailyFields.dailyDate] as String),
+        tasks: jsonDecode(json[DailyFields.tasks] as String? ?? "{}"),
+      );
+}
+
+class DailyFields {
+  static const String tableName = 'tasks';
+  static const String idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+  static const String dailyDateType = 'TEXT NOT NULL';
+  static const String tasksType = 'TEXT';
+
+  static const String id = 'id';
+  static const String dailyDate = 'daily_date';
+  static const String tasks = 'tasks';
+
+  static const List<String> values = [id, dailyDate, tasks];
+}
+
 class TaskDatabase {
   static final TaskDatabase instance = TaskDatabase._internal();
 
@@ -128,8 +176,9 @@ class TaskDatabase {
   }
 
   Future<Database> _initDatabase() async {
-    final databasePath = await getDatabasesPath();
-    final path = '$databasePath/notes.db';
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+    String path = join(await getDatabasesPath(), 'tasks.db');
     return await openDatabase(
       path,
       version: 1,
@@ -139,27 +188,34 @@ class TaskDatabase {
 
   Future<void> _createDatabase(Database db, _) async {
     return await db.execute('''
-        CREATE TABLE ${TaskFields.tableName} (
+        CREATE TABLE IF NOT EXISTS ${TaskFields.tableName} (
           ${TaskFields.id} ${TaskFields.idType},
           ${TaskFields.name} ${TaskFields.nameType},
-          ${TaskFields.description} ${TaskFields.descriptionType},
+          ${TaskFields.description} ${TaskFields.descriptionType},Th
           ${TaskFields.category} ${TaskFields.categoryType},
           ${TaskFields.priority} ${TaskFields.priorityType},
           ${TaskFields.urgency} ${TaskFields.urgencyType},
           ${TaskFields.eta} ${TaskFields.etaType},
           ${TaskFields.completedAt} ${TaskFields.completedAtType},
-          ${TaskFields.createdAt} ${TaskFields.createdAtType},
+          ${TaskFields.createdAt} ${TaskFields.createdAtType}
         )
+        CREATE TABLE IF NOT EXISTS ${DailyFields.tableName} (
+          ${DailyFields.id} ${DailyFields.idType},
+          ${DailyFields.dailyDate} ${DailyFields.dailyDateType},
+          ${DailyFields.tasks} ${DailyFields.tasksType}
+        );
       ''');
   }
 
-  Future<TaskModel> create(TaskModel note) async {
+  Future<TaskModel> create(TaskModel task) async {
     final db = await instance.database;
-    final id = await db.insert(TaskFields.tableName, note.toJson());
-    return note.copy(id: id);
+    var taskJson = task.toJson();
+    taskJson.remove('id');
+    final id = await db.insert(TaskFields.tableName, taskJson);
+    return task.copy(id: id);
   }
 
-  Future<TaskModel> read(int id) async {
+  Future<TaskModel?> read(int id) async {
     final db = await instance.database;
     final maps = await db.query(
       TaskFields.tableName,
@@ -171,8 +227,25 @@ class TaskDatabase {
     if (maps.isNotEmpty) {
       return TaskModel.fromJson(maps.first);
     } else {
-      throw Exception('ID $id not found');
+      return null;
     }
+  }
+
+  Future<List<TaskModel>> readAll() async {
+    final db = await instance.database;
+    const orderBy = '${TaskFields.createdAt} DESC';
+    final result = await db.query(TaskFields.tableName, orderBy: orderBy);
+    return result.map((json) => TaskModel.fromJson(json)).toList();
+  }
+
+  Future<int> update(TaskModel task) async {
+    final db = await instance.database;
+    return db.update(
+      TaskFields.tableName,
+      task.toJson(),
+      where: '${TaskFields.id} = ?',
+      whereArgs: [task.id],
+    );
   }
 
   Future<int> delete(int id) async {
@@ -181,6 +254,74 @@ class TaskDatabase {
       TaskFields.tableName,
       where: '${TaskFields.id} = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<int> complete(int id) async {
+    final db = await instance.database;
+    return await db.update(
+      TaskFields.tableName,
+      {'completed_at': "DATE('now')"},
+      where: '${TaskFields.id} = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> uncomplete(int id) async {
+    final db = await instance.database;
+    return await db.update(
+      TaskFields.tableName,
+      {'completed_at': ''},
+      where: '${TaskFields.id} = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<List<TaskModel>> readDailyTasks() async {
+    DailyModel? model = await readDaily();
+    if (model == null) {
+      return [];
+    }
+
+    List<TaskModel> dailies = [];
+    for (var id in model.tasks) {
+      TaskModel? task = await read(id);
+      if (task != null) {
+        dailies.add(task);
+      }
+    }
+
+    return dailies;
+  }
+
+  Future<DailyModel> createDaily(DailyModel daily) async {
+    final db = await instance.database;
+    final id = await db.insert(DailyFields.tableName, daily.toJson());
+    return daily.copy(id: id);
+  }
+
+  Future<DailyModel?> readDaily() async {
+    final db = await instance.database;
+    final maps = await db.query(
+      DailyFields.tableName,
+      columns: DailyFields.values,
+      where: "${DailyFields.dailyDate} = DATE('now')",
+    );
+
+    if (maps.isNotEmpty) {
+      return DailyModel.fromJson(maps.first);
+    } else {
+      return null;
+    }
+  }
+
+  Future<int> updateDaily(DailyModel daily) async {
+    final db = await instance.database;
+    return db.update(
+      DailyFields.tableName,
+      daily.toJson(),
+      where: '${DailyFields.id} = ?',
+      whereArgs: [daily.id],
     );
   }
 

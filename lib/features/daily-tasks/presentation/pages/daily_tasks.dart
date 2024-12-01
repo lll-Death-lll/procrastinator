@@ -22,15 +22,16 @@ class _DailyTasksState extends State<DailyTasks> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      var daily = getDailyTasksIds();
+      var daily = await getDailyTasksIds();
+      var allTasks = await getAllTasks();
       if (daily.isEmpty) {
         if (!mounted) return;
         await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    SelectDailyTasks(tasks: getAllTasks(), selected: daily)));
-        var dailyTasks = getDailyTasks();
+                    SelectDailyTasks(tasks: allTasks, selected: daily)));
+        var dailyTasks = await getDailyTasks();
         if (dailyTasks.isEmpty) {
           if (!mounted) return;
           Navigator.pop(context);
@@ -39,8 +40,9 @@ class _DailyTasksState extends State<DailyTasks> {
           tasks = dailyTasks;
         });
       } else {
+        var newTasks = await getDailyTasks();
         setState(() {
-          tasks = getDailyTasks();
+          tasks = newTasks;
         });
       }
     });
@@ -118,13 +120,16 @@ class _DailyTasksState extends State<DailyTasks> {
           IconButton(
               onPressed: () async {
                 var daily = tasks.map((t) => t.id).toSet();
+                var allTasks = await getAllTasks();
                 await Navigator.push(
+                    // ignore: use_build_context_synchronously
                     context,
                     MaterialPageRoute(
                         builder: (context) => SelectDailyTasks(
-                            tasks: getAllTasks(), selected: daily)));
+                            tasks: allTasks, selected: daily)));
+                var newTasks = await getDailyTasks();
                 setState(() {
-                  tasks = getDailyTasks();
+                  tasks = newTasks;
                 });
               },
               icon: const Icon(
