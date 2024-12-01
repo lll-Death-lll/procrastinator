@@ -147,7 +147,7 @@ class DailyModel {
 }
 
 class DailyFields {
-  static const String tableName = 'tasks';
+  static const String tableName = 'daily';
   static const String idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
   static const String dailyDateType = 'TEXT NOT NULL';
   static const String tasksType = 'TEXT';
