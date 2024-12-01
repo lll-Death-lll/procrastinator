@@ -6,7 +6,13 @@ class TaskList extends StatelessWidget {
   final List<Task> tasks;
   final Function(int index, bool isCompleted)? onCheck;
   final Function(int index, Task task)? onUpdate;
-  const TaskList({super.key, required this.tasks, this.onCheck, this.onUpdate});
+  final Function(int index)? onDelete;
+  const TaskList(
+      {super.key,
+      required this.tasks,
+      this.onCheck,
+      this.onUpdate,
+      this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +29,11 @@ class TaskList extends StatelessWidget {
           onCheck: (isCompleted) {
             if (onCheck != null) {
               onCheck!(index, isCompleted);
+            }
+          },
+          onDelete: () {
+            if (onDelete != null) {
+              onDelete!(index);
             }
           },
         );

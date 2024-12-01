@@ -177,6 +177,12 @@ class _HomeState extends State<Home> {
               tasks[index] = task;
             });
           },
+          onDelete: (index) {
+            removeTask(tasks[index]);
+            setState(() {
+              tasks.removeAt(index);
+            });
+          },
         ),
       ),
     );

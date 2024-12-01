@@ -11,6 +11,7 @@ class TaskCard extends StatelessWidget {
 
   final Function(bool isCompleted)? onCheck;
   final Function(Task task)? onUpdate;
+  final Function()? onDelete;
 
   final int? maxTextLength;
 
@@ -19,6 +20,7 @@ class TaskCard extends StatelessWidget {
       required this.task,
       this.onCheck,
       this.onUpdate,
+      this.onDelete,
       this.maxTextLength});
 
   @override
@@ -90,6 +92,11 @@ class TaskCard extends StatelessWidget {
                                 }
                               },
                               editTask: task,
+                              onDelete: () {
+                                if (onDelete != null) {
+                                  onDelete!();
+                                }
+                              },
                             )));
               },
             ),

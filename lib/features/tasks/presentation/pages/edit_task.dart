@@ -9,8 +9,13 @@ import 'package:procrastinator/features/tasks/domain/task.dart';
 
 class EditTask extends StatefulWidget {
   final Function(Task task) onEdit;
+  final Function() onDelete;
   final Task editTask;
-  const EditTask({super.key, required this.onEdit, required this.editTask});
+  const EditTask(
+      {super.key,
+      required this.onEdit,
+      required this.editTask,
+      required this.onDelete});
 
   @override
   State<EditTask> createState() => _EditTaskState();
@@ -238,6 +243,17 @@ class _EditTaskState extends State<EditTask> {
                         hoveredBorder: Colors.white)
                   ],
                 ),
+                const SizedBox(height: 20),
+                IconButton(
+                    onPressed: () {
+                      widget.onDelete();
+
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ))
               ],
             ),
           ),

@@ -10,6 +10,14 @@ Future<void> saveTaskDB(TaskDatabase database, Task task) {
   return database.create(intoTaskModel(task));
 }
 
+Future<void> removeTask(Task task) {
+  return removeTaskDB(db, task);
+}
+
+Future<void> removeTaskDB(TaskDatabase database, Task task) {
+  return database.delete(task.id);
+}
+
 Future<void> updateTask(Task task) {
   return updateTaskDB(db, 'tasks', task);
 }
