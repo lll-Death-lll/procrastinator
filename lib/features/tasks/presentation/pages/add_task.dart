@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:procrastinator/core/widgets/dropdown_select.dart';
 import 'package:procrastinator/core/widgets/hovered_text_field.dart';
-import 'package:procrastinator/features/tasks/data/data_sources/task.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
 import 'package:procrastinator/features/tasks/domain/task_category.dart';
 import 'package:procrastinator/features/tasks/domain/task_priority.dart';
@@ -49,7 +48,7 @@ class _AddTaskState extends State<AddTask> {
           }
 
           Task newTask = Task(
-              id: getNewId(),
+              id: 0,
               name: nameController.text,
               description: descriptionController.text.isNotEmpty
                   ? descriptionController.text

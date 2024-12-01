@@ -1,104 +1,69 @@
-import 'package:procrastinator/features/tasks/data/repository/parse_task.dart';
+import 'package:procrastinator/features/tasks/data/repository/database.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
-import 'package:sqlite3/sqlite3.dart' as sqlite;
+import 'package:procrastinator/main.dart';
 
-import '../../../../main.dart';
-
-int getNewId() {
-  return getNewIdDB(db, 'tasks');
+Future<void> saveTask(Task task) {
+  return saveTaskDB(db, task);
 }
 
-int getNewIdDB(sqlite.Database database, String table) {
-  var newID = database.select('''
-    SELECT COUNT(*) FROM $table;
-  ''')[0]['COUNT(*)'].toString();
-
-  return int.tryParse(newID) ?? 0;
+Future<void> saveTaskDB(TaskDatabase database, Task task) {
+  return database.create(intoTaskModel(task));
 }
 
-void saveTask(Task task) {
-  saveTaskDB(db, 'tasks', task);
+Future<void> updateTask(Task task) {
+  return updateTaskDB(db, 'tasks', task);
 }
 
-void saveTaskDB(sqlite.Database database, String table, Task task) {
-  var taskDescription =
-      task.description != null ? '\'${task.description}\'' : 'null';
-  var taskETA = task.eta != null ? '\'${task.eta}\'' : 'null';
-  var completedAt =
-      task.completedAt != null ? '\'${task.completedAt}\'' : 'null';
-  database.execute('''
-        INSERT INTO $table
-        (name, description,
-        category, priority,
-        urgency, eta,
-        completed_at, created_at)
-        VALUES
-        ('${task.name}', $taskDescription,
-        '${task.category}', '${task.priority}',
-        '${task.urgency}', $taskETA,
-        $completedAt, '${task.createdAt}');
-        ''');
+Future<void> updateTaskDB(TaskDatabase database, String table, Task task) {
+  return database.update(intoTaskModel(task));
 }
 
-void updateTask(Task task) {
-  updateTaskDB(db, 'tasks', task);
+Future<void> completeTask(int taskID) {
+  return completeTaskDB(db, taskID);
 }
 
-void updateTaskDB(sqlite.Database database, String table, Task task) {
-  var taskDescription =
-      task.description != null ? '\'${task.description}\'' : 'null';
-  var taskETA = task.eta != null ? '\'${task.eta}\'' : 'null';
-  database.execute('''
-    UPDATE $table
-    SET description = $taskDescription,
-    category = '${task.category}',
-    priority = '${task.priority}',
-    urgency = '${task.urgency}',
-    eta = $taskETA
-    WHERE id = ${task.id};
-  ''');
+Future<void> completeTaskDB(TaskDatabase database, int taskId) {
+  return database.complete(taskId);
 }
 
-void completeTask(int taskID) {
-  completeTaskDB(db, 'tasks', taskID);
+Future<void> removeTaskCompletion(int taskID) {
+  return removeTaskCompletionDB(db, taskID);
 }
 
-void completeTaskDB(sqlite.Database database, String table, int taskId) {
-  database.execute('''
-    UPDATE $table
-    SET completed_at = datetime('now')
-    WHERE id = $taskId;
-  ''');
+Future<void> removeTaskCompletionDB(TaskDatabase database, int taskId) {
+  return database.uncomplete(taskId);
 }
 
-void removeTaskCompletion(int taskID) {
-  removeTaskCompletionDB(db, 'tasks', taskID);
+Future<List<Task>> getAllTasks() {
+  return getAllTasksDB(db);
 }
 
-void removeTaskCompletionDB(
-    sqlite.Database database, String table, int taskId) {
-  database.execute('''
-    UPDATE $table
-    SET completed_at = null
-    WHERE id = $taskId;
-  ''');
+Future<List<Task>> getAllTasksDB(TaskDatabase database) {
+  return database.readAll().then((m) => m.map(fromTaskModel).toList());
 }
 
-List<Task> getAllTasks() {
-  return getAllTasksDB(db, 'tasks');
+Task fromTaskModel(TaskModel model) {
+  return Task(
+      id: model.id,
+      name: model.name,
+      description: model.description,
+      category: model.category,
+      priority: model.priority,
+      urgency: model.urgency,
+      eta: model.eta,
+      completedAt: model.completedAt,
+      createdAt: model.createdAt);
 }
 
-List<Task> getAllTasksDB(sqlite.Database database, String table) {
-  List<Task> tasks = [];
-
-  var dbTasks = database.select('''SELECT * FROM $table''');
-
-  dbTasks.forEach(((dbTask) {
-    Task? task = convertToTask(dbTask);
-    if (task != null) {
-      tasks.add(task);
-    }
-  }));
-
-  return tasks;
+TaskModel intoTaskModel(Task task) {
+  return TaskModel(
+      id: task.id,
+      name: task.name,
+      description: task.description,
+      category: task.category,
+      priority: task.priority,
+      urgency: task.urgency,
+      eta: task.eta,
+      completedAt: task.completedAt,
+      createdAt: task.createdAt);
 }

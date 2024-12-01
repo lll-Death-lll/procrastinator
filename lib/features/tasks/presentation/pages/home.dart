@@ -14,12 +14,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late List<Task> tasks;
+  List<Task> tasks = [];
 
   @override
   void initState() {
     super.initState();
-    tasks = getAllTasks();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() async {
+        tasks = await getAllTasks();
+      });
+    });
   }
 
   @override
@@ -38,8 +42,8 @@ class _HomeState extends State<Home> {
                     overlayColor: Colors.black),
                 onPressed: () async {
                   await Navigator.pushNamed(context, '/daily');
-                  setState(() {
-                    tasks = getAllTasks();
+                  setState(() async {
+                    tasks = await getAllTasks();
                   });
                 },
                 label: const Text(
@@ -113,8 +117,8 @@ class _HomeState extends State<Home> {
           ),
           IconButton(
               onPressed: () {
-                setState(() {
-                  tasks = getAllTasks();
+                setState(() async {
+                  tasks = await getAllTasks();
                 });
               },
               icon: const Icon(

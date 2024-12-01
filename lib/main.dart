@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:procrastinator/features/daily-tasks/presentation/pages/daily_tasks.dart';
+import 'package:procrastinator/features/tasks/data/repository/database.dart';
 import 'package:procrastinator/features/tasks/presentation/pages/home.dart';
-import 'package:sqlite3/sqlite3.dart';
 
 final db = setupApp();
 
@@ -26,27 +26,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Database setupApp() {
-  final db = sqlite3.openInMemory();
-
-  db.execute('''
-    CREATE TABLE IF NOT EXISTS tasks (
-      id INTEGER NOT NULL PRIMARY KEY,
-      name TEXT NOT NULL,
-      description TEXT,
-      category TEXT NOT NULL,
-      priority TEXT NOT NULL,
-      urgency TEXT NOT NULL,
-      eta INTEGER,
-      completed_at TEXT,
-      created_at TEXT NOT NULL
-    );
-    CREATE TABLE IF NOT EXISTS daily (
-      id INTEGER NOT NULL PRIMARY KEY,
-      daily_date TEXT NOT NULL UNIQUE,
-      tasks TEXT NOT NULL
-    );
-  ''');
-
+TaskDatabase setupApp() {
+  var db = TaskDatabase.instance;
   return db;
 }
