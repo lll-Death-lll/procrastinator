@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:procrastinator/features/tasks/domain/task_category.dart';
 import 'package:procrastinator/features/tasks/domain/task_priority.dart';
 import 'package:procrastinator/features/tasks/domain/task_urgency.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+// ignore: depend_on_referenced_packages
+import 'package:path/path.dart';
 
 class TaskModel {
   final int id;
@@ -29,12 +31,12 @@ class TaskModel {
   Map<String, Object?> toJson() => {
         TaskFields.id: id,
         TaskFields.name: name,
-        TaskFields.description: description ?? 'null',
+        TaskFields.description: description ?? '',
         TaskFields.category: category.toString(),
         TaskFields.priority: priority.toString(),
         TaskFields.urgency: urgency.toString(),
-        TaskFields.eta: eta ?? 'null',
-        TaskFields.completedAt: completedAt?.toIso8601String() ?? 'null',
+        TaskFields.eta: eta ?? '',
+        TaskFields.completedAt: completedAt?.toIso8601String() ?? '',
         TaskFields.createdAt: createdAt.toIso8601String()
       };
 
@@ -173,8 +175,9 @@ class TaskDatabase {
   }
 
   Future<Database> _initDatabase() async {
-    final databasePath = await getDatabasesPath();
-    final path = '$databasePath/tasks.db';
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+    String path = join(await getDatabasesPath(), 'tasks.db');
     return await openDatabase(
       path,
       version: 1,
@@ -184,28 +187,30 @@ class TaskDatabase {
 
   Future<void> _createDatabase(Database db, _) async {
     return await db.execute('''
-        CREATE TABLE ${TaskFields.tableName} (
+        CREATE TABLE IF NOT EXISTS ${TaskFields.tableName} (
           ${TaskFields.id} ${TaskFields.idType},
           ${TaskFields.name} ${TaskFields.nameType},
-          ${TaskFields.description} ${TaskFields.descriptionType},
+          ${TaskFields.description} ${TaskFields.descriptionType},Th
           ${TaskFields.category} ${TaskFields.categoryType},
           ${TaskFields.priority} ${TaskFields.priorityType},
           ${TaskFields.urgency} ${TaskFields.urgencyType},
           ${TaskFields.eta} ${TaskFields.etaType},
           ${TaskFields.completedAt} ${TaskFields.completedAtType},
-          ${TaskFields.createdAt} ${TaskFields.createdAtType},
+          ${TaskFields.createdAt} ${TaskFields.createdAtType}
         );
-        CREATE TABLE ${DailyFields.tableName} (
+        CREATE TABLE IF NOT EXISTS ${DailyFields.tableName} (
           ${DailyFields.id} ${DailyFields.idType},
           ${DailyFields.dailyDate} ${DailyFields.dailyDateType},
-          ${DailyFields.tasks} ${DailyFields.tasksType},
+          ${DailyFields.tasks} ${DailyFields.tasksType}
         );
       ''');
   }
 
   Future<TaskModel> create(TaskModel task) async {
     final db = await instance.database;
-    final id = await db.insert(TaskFields.tableName, task.toJson());
+    var taskJson = task.toJson();
+    taskJson.remove('id');
+    final id = await db.insert(TaskFields.tableName, taskJson);
     return task.copy(id: id);
   }
 
@@ -265,7 +270,7 @@ class TaskDatabase {
     final db = await instance.database;
     return await db.update(
       TaskFields.tableName,
-      {'completed_at': 'null'},
+      {'completed_at': ''},
       where: '${TaskFields.id} = ?',
       whereArgs: [id],
     );

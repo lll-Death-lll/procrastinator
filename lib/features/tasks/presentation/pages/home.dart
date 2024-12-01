@@ -19,9 +19,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() async {
-        tasks = await getAllTasks();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      var newTasks = await getAllTasks();
+      setState(() {
+        tasks = newTasks;
       });
     });
   }
@@ -42,8 +43,9 @@ class _HomeState extends State<Home> {
                     overlayColor: Colors.black),
                 onPressed: () async {
                   await Navigator.pushNamed(context, '/daily');
-                  setState(() async {
-                    tasks = await getAllTasks();
+                  var newTasks = await getAllTasks();
+                  setState(() {
+                    tasks = newTasks;
                   });
                 },
                 label: const Text(
@@ -116,9 +118,10 @@ class _HomeState extends State<Home> {
             },
           ),
           IconButton(
-              onPressed: () {
-                setState(() async {
-                  tasks = await getAllTasks();
+              onPressed: () async {
+                var newTasks = await getAllTasks();
+                setState(() {
+                  tasks = newTasks;
                 });
               },
               icon: const Icon(

@@ -40,8 +40,9 @@ class _DailyTasksState extends State<DailyTasks> {
           tasks = dailyTasks;
         });
       } else {
-        setState(() async {
-          tasks = await getDailyTasks();
+        var newTasks = await getDailyTasks();
+        setState(() {
+          tasks = newTasks;
         });
       }
     });
@@ -126,8 +127,9 @@ class _DailyTasksState extends State<DailyTasks> {
                     MaterialPageRoute(
                         builder: (context) => SelectDailyTasks(
                             tasks: allTasks, selected: daily)));
-                setState(() async {
-                  tasks = await getDailyTasks();
+                var newTasks = await getDailyTasks();
+                setState(() {
+                  tasks = newTasks;
                 });
               },
               icon: const Icon(
