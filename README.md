@@ -60,7 +60,7 @@
 
 ### Built With
 
-* [![Flutter][Flutter-shield]][Flutter-url]
+[![Flutter][Flutter-shield]][Flutter-url]
 
 
 <!-- GETTING STARTED -->
