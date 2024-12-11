@@ -49,9 +49,10 @@ jobs:
       - name: Install CMake ^3.14
         run: |
           sudo apt-get install -y build-essential libssl-dev pkg-config
-          git clone https://github.com/Kitware/CMake
-          cd CMake
-          ./bootstrap && make && sudo make install
+          wget "https://cmake.org/files/v3.30/cmake-3.30.0-linux-x86_64.tar.gz"
+          tar xvf cmake-3.30.0-linux-x86_64.tar.gz
+          sudo mv cmake-3.30.0-linux-x86_64 /opt
+          sudo ln -s /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Install Android Sdk
         run: sudo apt update && sudo apt install android-sdk
@@ -95,9 +96,10 @@ jobs:
       - name: Install CMake ^3.14
         run: |
           sudo apt-get install -y build-essential libssl-dev pkg-config
-          git clone https://github.com/Kitware/CMake
-          cd CMake
-          ./bootstrap && make && make install
+          wget "https://cmake.org/files/v3.30/cmake-3.30.0-linux-x86_64.tar.gz"
+          tar xvf cmake-3.30.0-linux-x86_64.tar.gz
+          sudo mv cmake-3.30.0-linux-x86_64 /opt
+          sudo ln -s /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Fix Flutter actions
         run: git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.24.5-x64
@@ -146,9 +148,10 @@ jobs:
       - name: Install CMake ^3.14
         run: |
           sudo apt-get install -y build-essential libssl-dev pkg-config
-          git clone https://github.com/Kitware/CMake
-          cd CMake
-          ./bootstrap && make && make install
+          wget "https://cmake.org/files/v3.30/cmake-3.30.0-linux-x86_64.tar.gz"
+          tar xvf cmake-3.30.0-linux-x86_64.tar.gz
+          sudo mv cmake-3.30.0-linux-x86_64 /opt
+          sudo ln -s /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Fix Flutter actions
         run: git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.24.5-x64
@@ -212,9 +215,10 @@ jobs:
       - name: Install CMake ^3.14
         run: |
           sudo apt-get install -y build-essential libssl-dev pkg-config
-          git clone https://github.com/Kitware/CMake
-          cd CMake
-          ./bootstrap && make && make install
+          wget "https://cmake.org/files/v3.30/cmake-3.30.0-linux-x86_64.tar.gz"
+          tar xvf cmake-3.30.0-linux-x86_64.tar.gz
+          sudo mv cmake-3.30.0-linux-x86_64 /opt
+          sudo ln -s /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Fix Flutter actions
         run: git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.24.5-x64
