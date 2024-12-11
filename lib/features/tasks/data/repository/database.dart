@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 
 import 'package:procrastinator/features/tasks/domain/task_category.dart';
 import 'package:procrastinator/features/tasks/domain/task_priority.dart';
 import 'package:procrastinator/features/tasks/domain/task_urgency.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class TaskModel {
   final int id;
@@ -176,9 +177,19 @@ class TaskDatabase {
   }
 
   Future<Database> _initDatabase() async {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-    String path = join(await getDatabasesPath(), 'tasks.db');
+    if (Platform.isWindows || Platform.isLinux) {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
+    var dbPath = await getDatabasesPath();
+    if (!await Directory.fromUri(Uri.directory(dbPath)).exists()) {
+      // ignore: avoid_print
+      print("ABC!!!");
+      // ignore: avoid_print
+      print(dbPath);
+      await Directory(dbPath).create(recursive: true);
+    }
+    String path = join(dbPath, 'tasks.db');
     return await openDatabase(
       path,
       version: 1,
@@ -191,20 +202,32 @@ class TaskDatabase {
         CREATE TABLE IF NOT EXISTS ${TaskFields.tableName} (
           ${TaskFields.id} ${TaskFields.idType},
           ${TaskFields.name} ${TaskFields.nameType},
-          ${TaskFields.description} ${TaskFields.descriptionType},Th
+          ${TaskFields.description} ${TaskFields.descriptionType},
           ${TaskFields.category} ${TaskFields.categoryType},
           ${TaskFields.priority} ${TaskFields.priorityType},
           ${TaskFields.urgency} ${TaskFields.urgencyType},
           ${TaskFields.eta} ${TaskFields.etaType},
           ${TaskFields.completedAt} ${TaskFields.completedAtType},
           ${TaskFields.createdAt} ${TaskFields.createdAtType}
-        )
+        );
+
         CREATE TABLE IF NOT EXISTS ${DailyFields.tableName} (
           ${DailyFields.id} ${DailyFields.idType},
           ${DailyFields.dailyDate} ${DailyFields.dailyDateType},
           ${DailyFields.tasks} ${DailyFields.tasksType}
         );
       ''');
+  }
+
+  Future<void> resetDatabase() async {
+    final db = await instance.database;
+
+    await db.execute('''
+      DROP TABLE IF EXISTS ${TaskFields.tableName};
+      DROP TABLE IF EXISTS ${DailyFields.tableName};
+    ''');
+
+    return _createDatabase(db, 0);
   }
 
   Future<TaskModel> create(TaskModel task) async {

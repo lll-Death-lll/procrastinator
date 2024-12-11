@@ -18,9 +18,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Procrastinator',
       routes: {
-        '/': (context) => const Home(),
-        '/martix': (context) => Container(),
-        '/daily': (context) => const DailyTasks(),
+        '/': (context) => const SafeArea(
+              child: Home(),
+            ),
+        '/martix': (context) => SafeArea(
+              child: Container(),
+            ),
+        '/daily': (context) => const SafeArea(child: DailyTasks()),
       },
     );
   }

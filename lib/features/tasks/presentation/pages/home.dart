@@ -5,6 +5,7 @@ import 'package:procrastinator/features/tasks/data/data_sources/task.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
 import 'package:procrastinator/features/tasks/presentation/widgets/task_list.dart';
 import 'package:procrastinator/features/tasks/presentation/widgets/task_sort.dart';
+import 'package:procrastinator/main.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -33,13 +34,14 @@ class _HomeState extends State<Home> {
       drawer: Drawer(
         backgroundColor: Colors.grey[900],
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    backgroundColor: Colors.red,
+                    backgroundColor: Colors.amber,
                     overlayColor: Colors.black),
                 onPressed: () async {
                   await Navigator.pushNamed(context, '/daily');
@@ -50,6 +52,20 @@ class _HomeState extends State<Home> {
                 },
                 label: const Text(
                   'Daily',
+                  style: TextStyle(color: Colors.white),
+                )),
+            ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    backgroundColor: const Color.fromARGB(255, 255, 0, 0),
+                    overlayColor: Colors.black),
+                onPressed: () async {
+                  await db.resetDatabase();
+                },
+                label: const Text(
+                  'Reset Everything',
                   style: TextStyle(color: Colors.white),
                 ))
           ],
