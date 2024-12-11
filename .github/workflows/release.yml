@@ -54,8 +54,11 @@ jobs:
           sudo mv cmake-3.30.0-linux-x86_64 /opt
           sudo ln -s --force /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
+      - name: Install Java 17
+        run: sudo apt-get install openjdk-17-jdk openjdk-17-jre
+
       - name: Install Android Sdk
-        run: sudo apt update && sudo apt install android-sdk
+        run: sudo apt-get install android-sdk
 
       - name: Fix Flutter actions
         run: git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.24.5-x64
@@ -245,6 +248,9 @@ jobs:
           mkdir AppDir
           cp -r ./build/linux/x64/release/bundle/* AppDir/
 
+      - name: Copy Recipe to correct location
+        run: cp ./scripts/appimage/AppImageBuilder_x86_64.yml AppImageBuilder.yml
+
       - name: Copy logo to AppDir
         run: |
           mkdir -p AppDir/usr/share/icons/hicolor/32x32/apps
@@ -253,9 +259,6 @@ jobs:
           cp ./assets/img/logo-128.png AppDir/usr/share/icons/hicolor/128x128/apps/procrastinator.png
           mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
           cp ./assets/img/logo-256.png AppDir/usr/share/icons/hicolor/256x256/apps/procrastinator.png
-
-      - name: Copy Recipe to correct location
-        run: cp scripts/appimage/AppImageBuilder_x86_64.yml AppImageBuilder.yml
   
       - name: Build AppImage
         uses: AppImageCrafters/build-appimage@57c3bc6963f870ce3be103117de5b5e33ffbaeb6
