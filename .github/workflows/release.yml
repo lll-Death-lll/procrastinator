@@ -249,7 +249,7 @@ jobs:
           cp -r ./build/linux/x64/release/bundle/* AppDir/
 
       - name: Copy Recipe to correct location
-        run: cp ./scripts/appimage/AppImageBuilder_x86_64.yml AppImageBuilder.yml
+        run: cp ./scripts/AppImage/AppImageBuilder_x86_64.yml AppImageBuilder.yml
 
       - name: Copy logo to AppDir
         run: |
