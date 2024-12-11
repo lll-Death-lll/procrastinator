@@ -21,9 +21,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const SafeArea(
               child: Home(),
             ),
-        '/martix': (context) => SafeArea(
-              child: Container(),
-            ),
+        '/martix': (context) => Container(),
         '/daily': (context) => const SafeArea(child: DailyTasks()),
       },
     );
