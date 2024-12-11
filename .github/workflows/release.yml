@@ -55,7 +55,10 @@ jobs:
           sudo ln -s --force /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Install Java 17
-        run: sudo apt-get install openjdk-17-jdk openjdk-17-jre
+        run: |
+          sudo apt-get install openjdk-17-jdk openjdk-17-jre
+          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
 
       - name: Install Android Sdk
         run: sudo apt-get install android-sdk
