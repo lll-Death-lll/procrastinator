@@ -117,5 +117,7 @@ Project Link: [https://github.com/lll-Death-lll/procrastinator](https://github.c
 
 [Flutter-shield]: https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white
 [Flutter-url]: https://flutter.dev/
+[issues-shield]: https://img.shields.io/github/issues/lll-Death-lll/procrastinator.svg?style=for-the-badge
+[issues-url]: https://github.com/lll-Death-lll/procrastinator/issues
 [license-shield]: https://img.shields.io/github/license/lll-Death-lll/procrastinator?style=for-the-badge
 [license-url]: https://github.com/lll-Death-lll/procrastinator/blob/main/LICENSE
