@@ -52,7 +52,7 @@ jobs:
           wget "https://cmake.org/files/v3.30/cmake-3.30.0-linux-x86_64.tar.gz"
           tar xvf cmake-3.30.0-linux-x86_64.tar.gz
           sudo mv cmake-3.30.0-linux-x86_64 /opt
-          sudo ln -s -n /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
+          sudo ln -s --force /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Install Android Sdk
         run: sudo apt update && sudo apt install android-sdk
@@ -99,7 +99,7 @@ jobs:
           wget "https://cmake.org/files/v3.30/cmake-3.30.0-linux-x86_64.tar.gz"
           tar xvf cmake-3.30.0-linux-x86_64.tar.gz
           sudo mv cmake-3.30.0-linux-x86_64 /opt
-          sudo ln -s -n /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
+          sudo ln -s --force /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Fix Flutter actions
         run: git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.24.5-x64
@@ -151,7 +151,7 @@ jobs:
           wget "https://cmake.org/files/v3.30/cmake-3.30.0-linux-x86_64.tar.gz"
           tar xvf cmake-3.30.0-linux-x86_64.tar.gz
           sudo mv cmake-3.30.0-linux-x86_64 /opt
-          sudo ln -s -n /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
+          sudo ln -s --force /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Fix Flutter actions
         run: git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.24.5-x64
@@ -218,7 +218,7 @@ jobs:
           wget "https://cmake.org/files/v3.30/cmake-3.30.0-linux-x86_64.tar.gz"
           tar xvf cmake-3.30.0-linux-x86_64.tar.gz
           sudo mv cmake-3.30.0-linux-x86_64 /opt
-          sudo ln -s -n /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
+          sudo ln -s --force /opt/cmake-3.30.0-linux-x86_64/bin/cmake /usr/local/bin/cmake
 
       - name: Fix Flutter actions
         run: git config --global --add safe.directory /opt/hostedtoolcache/flutter/stable-3.24.5-x64
