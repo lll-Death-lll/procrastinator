@@ -68,7 +68,7 @@
 
 ### Prerequisites
 
-* flutter
+* Flutter  
   https://docs.flutter.dev/get-started/install
 
 ### Installation
