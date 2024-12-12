@@ -188,9 +188,11 @@ jobs:
       - name: Find deb file
         id: find_deb
         run: |
-          echo 'deb_path<<EOF' >> $GITHUB_OUTPUT
-          find ./dist -name "*.deb" >> $GITHUB_OUTPUT
-          echo ‘EOF’ >> $GITHUB_OUTPUT
+          {
+            echo 'deb_path<<EOF'
+            find ./dist -name "*.deb"
+            echo EOF
+          } >> $GITHUB_OUTPUT
 
       - name: Check if deb file exists
         id: check_file
