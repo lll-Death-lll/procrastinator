@@ -71,7 +71,7 @@ class TaskModel {
         category: (json[TaskFields.category] as String).toCategory(),
         priority: (json[TaskFields.priority] as String).toPriority(),
         urgency: (json[TaskFields.urgency] as String).toUrgency(),
-        eta: int.tryParse(json[TaskFields.eta] as String? ?? ''),
+        eta: int.tryParse(json[TaskFields.eta] as String),
         completedAt: DateTime.tryParse(
           (json[TaskFields.completedAt] as String? ?? ''),
         ),
@@ -183,10 +183,6 @@ class TaskDatabase {
     }
     var dbPath = await getDatabasesPath();
     if (!await Directory.fromUri(Uri.directory(dbPath)).exists()) {
-      // ignore: avoid_print
-      print("ABC!!!");
-      // ignore: avoid_print
-      print(dbPath);
       await Directory(dbPath).create(recursive: true);
     }
     String path = join(dbPath, 'tasks.db');

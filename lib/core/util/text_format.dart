@@ -1,12 +1,5 @@
 import 'package:duration/duration.dart';
 
-String cutText(String text, int maxLength) {
-  if (text.length <= maxLength) {
-    return text;
-  }
-  return '${text.substring(0, maxLength - 3)}...';
-}
-
 String getETA(int? eta) {
   if (eta == null) {
     return '';
@@ -25,5 +18,5 @@ String getETA(int? eta) {
     }
   }
 
-  return 'ETA:\n$formattedTime';
+  return 'ETA: $formattedTime';
 }
