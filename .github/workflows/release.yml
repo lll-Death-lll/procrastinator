@@ -338,16 +338,39 @@ jobs:
       - name: List downloaded artifacts
         run: ls -R ./artifacts
 
+      - name: Rename artifacts
+        run: |
+          # Move the first matching APK file
+          mv "$(find artifacts/apk-result -maxdepth 1 -name '*.apk' | head -n 1)" \
+            "artifacts/Procrastinator-${{ needs.build.outputs.version }}-android-x64.apk"
+
+          # Move the first matching TAR.GZ file
+          mv "$(find artifacts/tar-gz-x86-64-result -maxdepth 1 -name '*.tar.gz' | head -n 1)" \
+            "artifacts/Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz"
+
+          # Move the first matching DEB file
+          mv "$(find artifacts/deb-x86-64-result -maxdepth 1 -name '*.deb' | head -n 1)" \
+            "artifacts/Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.deb"
+
+          # Move the first matching AppImage file
+          mv "$(find artifacts/appimage-x86-64-result -maxdepth 1 -name '*.AppImage' | head -n 1)" \
+            "artifacts/Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.AppImage"
+
+          # Move the first matching ZIP file
+          mv "$(find artifacts/windows-zip-x86-64-result -maxdepth 1 -name '*.zip' | head -n 1)" \
+            "artifacts/Procrastinator-${{ needs.build.outputs.version }}-windows-x86-64.zip"
+
+
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.build.outputs.version }}
           name: v${{ needs.build.outputs.version }}
           files: |
-            artifacts/apk-result/app-release.apk#Procrastinator-${{ needs.build.outputs.version }}-android-x64.apk
-            artifacts/tar-gz-x86-64-result/*.tar.gz#Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
-            artifacts/deb-x86-64-result/*.deb#Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.deb
-            artifacts/appimage-x86-64-result/*.AppImage#Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.AppImage
-            artifacts/windows-zip-x86-64-result/*.zip#Procrastinator-${{ needs.build.outputs.version }}-windows-x86-64.zip
+            artifacts/Procrastinator-${{ needs.build.outputs.version }}-android-x64.apk
+            artifacts/Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
+            artifacts/Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.deb
+            artifacts/Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.AppImage
+            artifacts/Procrastinator-${{ needs.build.outputs.version }}-windows-x86-64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
