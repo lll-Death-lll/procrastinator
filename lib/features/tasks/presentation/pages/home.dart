@@ -33,42 +33,69 @@ class _HomeState extends State<Home> {
     return Scaffold(
       drawer: Drawer(
         backgroundColor: Colors.grey[900],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton.icon(
+                    onPressed: () async {
+                      await Navigator.pushNamed(context, '/daily');
+                      var newTasks = await getAllTasks();
+                      setState(() {
+                        tasks = newTasks;
+                      });
+                    },
+                    label: Text(
+                      "Daily",
+                      style: TextStyle(color: Colors.white, fontSize: 24),
                     ),
-                    backgroundColor: Colors.amber,
-                    overlayColor: Colors.black),
-                onPressed: () async {
-                  await Navigator.pushNamed(context, '/daily');
-                  var newTasks = await getAllTasks();
-                  setState(() {
-                    tasks = newTasks;
-                  });
-                },
-                label: const Text(
-                  'Daily',
-                  style: TextStyle(color: Colors.white),
-                )),
-            ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+                    icon: Icon(
+                      Icons.sunny,
+                      size: 32,
+                      color: Colors.white,
                     ),
-                    backgroundColor: const Color.fromARGB(255, 255, 0, 0),
-                    overlayColor: Colors.black),
-                onPressed: () async {
-                  await db.resetDatabase();
-                },
-                label: const Text(
-                  'Reset Everything',
-                  style: TextStyle(color: Colors.white),
-                ))
-          ],
+                  ),
+                  SizedBox(height: 20),
+                  TextButton.icon(
+                    onPressed: () async {
+                      await Navigator.pushNamed(context, '/matrix');
+                      var newTasks = await getAllTasks();
+                      setState(() {
+                        tasks = newTasks;
+                      });
+                    },
+                    label: Text(
+                      "Matrix",
+                      style: TextStyle(color: Colors.white, fontSize: 24),
+                    ),
+                    icon: Icon(
+                      Icons.grid_view,
+                      size: 32,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 255, 0, 0),
+                      overlayColor: Colors.black),
+                  onPressed: () async {
+                    await db.resetDatabase();
+                  },
+                  label: const Text(
+                    'Reset Everything',
+                    style: TextStyle(color: Colors.white),
+                  ))
+            ],
+          ),
         ),
       ),
       appBar: AppBar(

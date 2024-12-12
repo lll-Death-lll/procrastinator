@@ -17,6 +17,7 @@ class Matrix extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // todo Add text on the sides or colors/icons
     return AspectRatio(
       aspectRatio: 1 / 1,
       child: GridView.count(

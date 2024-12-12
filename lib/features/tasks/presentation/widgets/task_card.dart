@@ -66,9 +66,6 @@ class TaskCard extends StatelessWidget {
                 color: Colors.grey[600],
               ),
             ),
-            const SizedBox(
-              width: 0,
-            ),
             CategoryIcon(task: task),
             const SizedBox(
               width: 5,

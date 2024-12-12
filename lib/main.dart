@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Procrastinator',
+      initialRoute: '/',
       routes: {
         '/': (context) => const SafeArea(
               child: Home(),
