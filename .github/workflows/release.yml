@@ -311,12 +311,12 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs:
-    - build
-    - build_apk
-    - build_tar_x86_64
-    - build_deb_x86_64
-    - build_appimage_x86_64
-    - build_windows_zip_x86_64
+      - build
+      - build_apk
+      - build_tar_x86_64
+      - build_deb_x86_64
+      - build_appimage_x86_64
+      - build_windows_zip_x86_64
     permissions:
       contents: write
       pull-requests: write
@@ -324,122 +324,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Draft release
-        id: draft_release
-        uses: release-drafter/release-drafter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: v${{ needs.build.outputs.version }}
-          name: v${{ needs.build.outputs.version }}
-
-      # APK
-      - name: Download apk file
-        uses: actions/download-artifact@v4
-        with:
-          name: apk-result
-          path: apk-result
-
-      - name: Copy apk file to root
-        run: cp apk-result .
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: app-release.apk
-          asset_name: Procrastinator-${{ needs.build.outputs.version }}-android-x64.apk
-          asset_content_type: application/vnd.android.package-archive
-
-      # TAR.GZ (x86_64)
-      - name: Download tar.gz file
-        uses: actions/download-artifact@v4
-        with:
-          name: tar-gz-x86-64-result
-          path: tar-gz-x86-64-result
-
-      - name: List files in tar.gz-directory
-        run: ls -l tar-gz-x86-64-result
-
-      - name: Copy tar.gz file to root
-        run: cp tar-gz-x86-64-result result.tar.gz
-
-      - name: Upload Release Asset (tar.gz)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: result.tar.gz
-          asset_name: Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
-          asset_content_type: application/gzip
-
-      # DEB (x86_64)
-      - name: Download deb file
-        uses: actions/download-artifact@v4
-        with:
-          name: deb-x86-64-result
-          path: deb-x86-64-result
-
-      - name: Copy deb file to root
-        run: cp deb-x86-64-result result.deb
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: result.deb
-          asset_name: Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.deb
-          asset_content_type: application/vnd.debian.binary-package
-
-      # APPIMAGE (x86_64)
-      - name: Download AppImage file
-        uses: actions/download-artifact@v4
-        with:
-          name: appimage-x86-64-result
-          path: appimage-x86-64-result
-
-      - name: List files in appimage-directory
-        run: ls -l appimage-x86-64-result
-
-      - name: Copy AppImage file to root
+      - name: Prepare Release
+        id: prepare_release
         run: |
-          for file in appimage-x86-64-result/*; do
-            if [[ $file == *.AppImage && $file != *.AppImage.zsync ]]; then
-              cp "$file" result.AppImage
-            fi
-          done
+          echo "RELEASE_VERSION=v${{ needs.build.outputs.version }}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=v${{ needs.build.outputs.version }}" >> $GITHUB_ENV
 
-      - name: Upload Release Asset (AppImage)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: result.AppImage
-          asset_name: Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.AppImage
-          asset_content_type: application/x-appimage
-
-      # WINDOWS ZIP (x86_64)
-      - name: Download windows zip file
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: windows-zip-x86-64-result
-          path: windows-zip-x86-64-result
+          path: ./artifacts
 
-      - name: Copy zip file to root
-        run: cp windows-zip-x86-64-result/*.zip result.zip
+      - name: List downloaded artifacts
+        run: ls -R ./artifacts
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          release_name: ${{ env.RELEASE_VERSION }}
+          files: |
+            artifacts/apk-result/app-release.apk#Procrastinator-${{ needs.build.outputs.version }}-android-x64.apk
+            artifacts/tar-gz-x86-64-result/*.tar.gz#Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
+            artifacts/deb-x86-64-result/*.deb#Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.deb
+            artifacts/appimage-x86-64-result/*.AppImage#Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.AppImage
+            artifacts/windows-zip-x86-64-result/*.zip#Procrastinator-${{ needs.build.outputs.version }}-windows-x86-64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.draft_release.outputs.upload_url }}
-          asset_path: result.zip
-          asset_name: Procrastinator-${{ needs.build.outputs.version }}-windows-x86-64.zip
-          asset_content_type: application/zip
