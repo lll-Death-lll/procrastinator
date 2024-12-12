@@ -341,7 +341,7 @@ jobs:
           path: apk-result
 
       - name: Copy apk file to root
-        run: cp apk-result/*.apk .
+        run: cp apk-result .
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -364,7 +364,7 @@ jobs:
         run: ls -l tar-gz-x86-64-result
 
       - name: Copy tar.gz file to root
-        run: cp tar-gz-x86-64-result.tar.gz result.tar.gz
+        run: cp tar-gz-x86-64-result result.tar.gz
 
       - name: Upload Release Asset (tar.gz)
         uses: actions/upload-release-asset@v1
@@ -384,7 +384,7 @@ jobs:
           path: deb-x86-64-result
 
       - name: Copy deb file to root
-        run: cp deb-x86-64-result.deb result.deb
+        run: cp deb-x86-64-result result.deb
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
