@@ -22,7 +22,6 @@ class TaskCardRounded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const defaultTextLength = 20;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,21 +34,29 @@ class TaskCardRounded extends StatelessWidget {
                 onCheck!(value);
               }
             }),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              cutText(task.name, maxTextLength ?? defaultTextLength),
-              style: const TextStyle(color: Colors.white),
-            ),
-            Text(
-              cutText(
-                  task.description ?? '', maxTextLength ?? defaultTextLength),
-              style: const TextStyle(color: Colors.white),
-            ),
-          ],
+        Expanded(
+          flex: 9,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                task.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.white),
+              ),
+              Text(
+                task.description ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
         ),
-        Expanded(child: Container()),
+        Spacer(
+          flex: 1,
+        ),
         Row(
           children: [
             Text(getETA(task.eta), style: const TextStyle(color: Colors.white)),
