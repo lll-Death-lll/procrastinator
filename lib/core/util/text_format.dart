@@ -18,5 +18,5 @@ String getETA(int? eta) {
     }
   }
 
-  return 'ETA:\n$formattedTime';
+  return 'ETA: $formattedTime';
 }

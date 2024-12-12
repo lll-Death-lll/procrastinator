@@ -46,10 +46,10 @@ class TaskCardRounded extends StatelessWidget {
                 style: const TextStyle(color: Colors.white),
               ),
               Text(
-                task.description ?? '',
+                getETA(task.eta),
+                style: const TextStyle(color: Colors.white),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(color: Colors.white),
               ),
             ],
           ),
@@ -59,7 +59,6 @@ class TaskCardRounded extends StatelessWidget {
         ),
         Row(
           children: [
-            Text(getETA(task.eta), style: const TextStyle(color: Colors.white)),
             IntrinsicHeight(
               child: VerticalDivider(
                 color: Colors.grey[600],
