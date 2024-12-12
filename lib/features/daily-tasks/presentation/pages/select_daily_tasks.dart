@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:procrastinator/features/daily-tasks/data/data_sources/daily_tasks.dart';
+import 'package:procrastinator/features/daily-tasks/repository/daily_tasks.dart';
 import 'package:procrastinator/features/daily-tasks/presentation/widgets/task_card_rounded.dart';
 import 'package:procrastinator/features/tasks/domain/sort_tasks_by.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
