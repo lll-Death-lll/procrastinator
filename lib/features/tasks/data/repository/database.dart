@@ -183,10 +183,6 @@ class TaskDatabase {
     }
     var dbPath = await getDatabasesPath();
     if (!await Directory.fromUri(Uri.directory(dbPath)).exists()) {
-      // ignore: avoid_print
-      print("ABC!!!");
-      // ignore: avoid_print
-      print(dbPath);
       await Directory(dbPath).create(recursive: true);
     }
     String path = join(dbPath, 'tasks.db');
