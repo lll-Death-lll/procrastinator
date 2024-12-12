@@ -71,7 +71,7 @@ class TaskModel {
         category: (json[TaskFields.category] as String).toCategory(),
         priority: (json[TaskFields.priority] as String).toPriority(),
         urgency: (json[TaskFields.urgency] as String).toUrgency(),
-        eta: int.tryParse(json[TaskFields.eta] as String),
+        eta: int.tryParse(json[TaskFields.eta].toString()),
         completedAt: DateTime.tryParse(
           (json[TaskFields.completedAt] as String? ?? ''),
         ),
