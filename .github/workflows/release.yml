@@ -341,8 +341,8 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          release_name: ${{ env.RELEASE_VERSION }}
+          tag_name: v${{ needs.build.outputs.version }}
+          name: v${{ needs.build.outputs.version }}
           files: |
             artifacts/apk-result/app-release.apk#Procrastinator-${{ needs.build.outputs.version }}-android-x64.apk
             artifacts/tar-gz-x86-64-result/*.tar.gz#Procrastinator-${{ needs.build.outputs.version }}-linux-x86-64.tar.gz
