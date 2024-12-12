@@ -317,6 +317,10 @@ jobs:
     - build_deb_x86_64
     - build_appimage_x86_64
     - build_windows_zip_x86_64
+    
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
