@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:procrastinator/core/util/text_format.dart';
 import 'package:procrastinator/features/tasks/presentation/pages/edit_task.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
-import 'package:procrastinator/features/tasks/presentation/widgets/category_icon.dart';
-import 'package:procrastinator/features/tasks/presentation/widgets/priority_icon.dart';
-import 'package:procrastinator/features/tasks/presentation/widgets/urgency_icon.dart';
 
 class ClearTaskCard extends StatelessWidget {
   final Task task;

@@ -160,6 +160,21 @@ class DailyFields {
   static const List<String> values = [id, dailyDate, tasks];
 }
 
+class TasksQuery {
+  final FieldQuery<Category>? category;
+  final FieldQuery<Priority>? priority;
+  final FieldQuery<Urgency>? urgency;
+
+  TasksQuery({this.category, this.priority, this.urgency});
+}
+
+class FieldQuery<T> {
+  final T item;
+  final bool equal;
+
+  FieldQuery(this.item, this.equal);
+}
+
 class TaskDatabase {
   static final TaskDatabase instance = TaskDatabase._internal();
 
@@ -236,15 +251,15 @@ class TaskDatabase {
 
   Future<TaskModel?> read(int id) async {
     final db = await instance.database;
-    final maps = await db.query(
+    final result = await db.query(
       TaskFields.tableName,
       columns: TaskFields.values,
       where: '${TaskFields.id} = ?',
       whereArgs: [id],
     );
 
-    if (maps.isNotEmpty) {
-      return TaskModel.fromJson(maps.first);
+    if (result.isNotEmpty) {
+      return TaskModel.fromJson(result.first);
     } else {
       return null;
     }
@@ -311,6 +326,41 @@ class TaskDatabase {
     }
 
     return dailies;
+  }
+
+  Future<List<TaskModel>> readTasksByQuery(TasksQuery query) async {
+    final db = await instance.database;
+
+    List<String> whereClauses = [];
+    List<dynamic> whereArgs = [];
+
+    if (query.priority != null) {
+      whereClauses.add(
+          '${TaskFields.priority} ${query.priority!.equal ? '=' : '!='} ?');
+      whereArgs.add(query.priority!.item.toString());
+    }
+
+    if (query.urgency != null) {
+      whereClauses
+          .add('${TaskFields.urgency} ${query.urgency!.equal ? '=' : '!='} ?');
+      whereArgs.add(query.urgency!.item.toString());
+    }
+
+    if (query.category != null) {
+      whereClauses.add(
+          '${TaskFields.category} ${query.category!.equal ? '=' : '!='} ?');
+      whereArgs.add(query.category!.item.toString());
+    }
+
+    String whereClause = whereClauses.join(' AND ');
+
+    final result = await db.query(
+      TaskFields.tableName,
+      where: whereClause.isNotEmpty ? whereClause : null,
+      whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
+    );
+
+    return result.map((json) => TaskModel.fromJson(json)).toList();
   }
 
   Future<DailyModel> createDaily(DailyModel daily) async {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:procrastinator/features/eisenhower-matrix/presentation/widgets/clear_task_card.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
-import 'package:procrastinator/features/tasks/presentation/widgets/task_card.dart';
 
 class ClearTaskList extends StatelessWidget {
   final List<Task> tasks;

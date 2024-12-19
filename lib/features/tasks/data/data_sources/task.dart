@@ -46,6 +46,14 @@ Future<List<Task>> getAllTasks() {
   return getAllTasksDB(db);
 }
 
+Future<List<Task>> getTasksBy(TasksQuery query) {
+  return getTasksByDB(db, query);
+}
+
+Future<List<Task>> getTasksByDB(TaskDatabase database, TasksQuery query) {
+  return db.readTasksByQuery(query).then((m) => m.map(fromTaskModel).toList());
+}
+
 Future<List<Task>> getAllTasksDB(TaskDatabase database) {
   return database.readAll().then((m) => m.map(fromTaskModel).toList());
 }
