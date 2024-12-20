@@ -27,6 +27,7 @@ Future<void> setDailyTasksDB(TaskDatabase database, Set<int> tasks) async {
   DailyModel? daily = await database.readDaily();
 
   if (daily == null) {
+    database.createDaily(DailyModel(id: 0, tasks: tasks));
     return;
   }
 
