@@ -121,12 +121,14 @@ class _DailyTasksState extends State<DailyTasks> {
               onPressed: () async {
                 var daily = tasks.map((t) => t.id).toSet();
                 var allTasks = await getAllTasks();
-                await Navigator.push(
-                    // ignore: use_build_context_synchronously
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SelectDailyTasks(
-                            tasks: allTasks, selected: daily)));
+                final currentContext = context;
+                if (currentContext.mounted) {
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SelectDailyTasks(
+                              tasks: allTasks, selected: daily)));
+                }
                 var newTasks = await getDailyTasks();
                 setState(() {
                   tasks = newTasks;
