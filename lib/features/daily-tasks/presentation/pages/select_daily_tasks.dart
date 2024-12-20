@@ -100,7 +100,7 @@ class _SelectDailyTasksState extends State<SelectDailyTasks> {
       ),
       floatingActionButton: TextButton.icon(
         onPressed: () async {
-          setDailyTasks(selectedIds);
+          await setDailyTasks(selectedIds);
           Navigator.pop(context);
         },
         label: const Text(
