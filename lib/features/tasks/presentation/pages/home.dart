@@ -200,29 +200,30 @@ class _HomeState extends State<Home> {
         padding: const EdgeInsets.all(8.0),
         child: TaskList(
           tasks: tasks,
-          onCheck: (index, completed) {
+          onCheck: (id, completed) async {
             if (completed) {
-              completeTask(tasks[index].id);
-              setState(() {
-                tasks[index].completedAt = DateTime.now();
-              });
+              completeTask(id);
             } else {
-              removeTaskCompletion(tasks[index].id);
-              setState(() {
-                tasks[index].completedAt = null;
-              });
+              removeTaskCompletion(id);
             }
-          },
-          onUpdate: (index, task) {
-            updateTask(task);
+
+            var newTasks = await getAllTasks();
             setState(() {
-              tasks[index] = task;
+              tasks = newTasks;
             });
           },
-          onDelete: (index) {
-            removeTask(tasks[index]);
+          onUpdate: (id, task) async {
+            updateTask(id, task);
+            var newTasks = await getAllTasks();
             setState(() {
-              tasks.removeAt(index);
+              tasks = newTasks;
+            });
+          },
+          onDelete: (id) async {
+            removeTask(id);
+            var newTasks = await getAllTasks();
+            setState(() {
+              tasks = newTasks;
             });
           },
         ),

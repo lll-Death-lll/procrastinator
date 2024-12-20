@@ -31,9 +31,9 @@ class Matrix extends StatelessWidget {
             decoration: BoxDecoration(border: Border.all(color: Colors.white)),
             child: ClearTaskList(
               tasks: tasksUrgentImportant,
-              onCheck: (index, isCompleted) {},
-              onDelete: (index) {},
-              onUpdate: (index, task) {},
+              onCheck: (id, isCompleted) {},
+              onDelete: (id) {},
+              onUpdate: (id, task) {},
             ),
           ),
           Container(
@@ -41,9 +41,9 @@ class Matrix extends StatelessWidget {
             decoration: BoxDecoration(border: Border.all(color: Colors.white)),
             child: ClearTaskList(
               tasks: tasksNotUrgentImportant,
-              onCheck: (index, isCompleted) {},
-              onDelete: (index) {},
-              onUpdate: (index, task) {},
+              onCheck: (id, isCompleted) {},
+              onDelete: (id) {},
+              onUpdate: (id, task) {},
             ),
           ),
           Container(

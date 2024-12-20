@@ -4,9 +4,9 @@ import 'package:procrastinator/features/tasks/presentation/widgets/task_card.dar
 
 class TaskList extends StatelessWidget {
   final List<Task> tasks;
-  final Function(int index, bool isCompleted)? onCheck;
-  final Function(int index, Task task)? onUpdate;
-  final Function(int index)? onDelete;
+  final Function(int id, bool isCompleted)? onCheck;
+  final Function(int id, Task task)? onUpdate;
+  final Function(int id)? onDelete;
   const TaskList(
       {super.key,
       required this.tasks,
@@ -23,17 +23,17 @@ class TaskList extends StatelessWidget {
           task: tasks[index],
           onUpdate: (Task task) {
             if (onUpdate != null) {
-              onUpdate!(index, task);
+              onUpdate!(tasks[index].id, task);
             }
           },
           onCheck: (isCompleted) {
             if (onCheck != null) {
-              onCheck!(index, isCompleted);
+              onCheck!(tasks[index].id, isCompleted);
             }
           },
           onDelete: () {
             if (onDelete != null) {
-              onDelete!(index);
+              onDelete!(tasks[index].id);
             }
           },
         );
