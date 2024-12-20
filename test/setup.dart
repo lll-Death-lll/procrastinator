@@ -1,27 +1,17 @@
-// import 'package:sqlite3/sqlite3.dart';
+import 'package:procrastinator/features/tasks/data/repository/database.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-// Database setupTestApp(String tableName) {
-//   final db = sqlite3.openInMemory();
+void sqfliteTestInit() {
+  // Initialize ffi implementation
+  sqfliteFfiInit();
+  // Set global factory
+  databaseFactory = databaseFactoryFfi;
+}
 
-//   db.execute('''
-//     CREATE TABLE IF NOT EXISTS '$tableName' (
-//       id INTEGER NOT NULL PRIMARY KEY,
-//       name TEXT NOT NULL,
-//       description TEXT,
-//       category TEXT NOT NULL,
-//       priority TEXT NOT NULL,
-//       urgency TEXT NOT NULL,
-//       eta INTEGER,
-//       completed_at TEXT,
-//       created_at TEXT NOT NULL
-//     );
-//   ''');
+Future<TaskDatabase> setupTestApp() async {
+  sqfliteTestInit();
 
-//   return db;
-// }
-
-// void cleanupTestApp(Database db, String dbName) {
-//   db.execute('''
-//     DROP TABLE IF EXISTS $dbName;
-//   ''');
-// }
+  final TaskDatabase db = TaskDatabase.instance;
+  await db.resetDatabase();
+  return db;
+}
