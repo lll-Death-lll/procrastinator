@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
                     ),
                     icon: Icon(
                       Icons.sunny,
-                      size: 32,
+                      size: 24,
                       color: Colors.white,
                     ),
                   ),
@@ -73,26 +73,12 @@ class _HomeState extends State<Home> {
                     ),
                     icon: Icon(
                       Icons.grid_view,
-                      size: 32,
+                      size: 24,
                       color: Colors.white,
                     ),
                   ),
                 ],
               ),
-              ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      backgroundColor: const Color.fromARGB(255, 255, 0, 0),
-                      overlayColor: Colors.black),
-                  onPressed: () async {
-                    await db.resetDatabase();
-                  },
-                  label: const Text(
-                    'Reset Everything',
-                    style: TextStyle(color: Colors.white),
-                  ))
             ],
           ),
         ),
