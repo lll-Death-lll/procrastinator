@@ -5,7 +5,6 @@ import 'package:procrastinator/features/tasks/data/data_sources/task.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
 import 'package:procrastinator/features/tasks/presentation/widgets/task_list.dart';
 import 'package:procrastinator/features/tasks/presentation/widgets/task_sort.dart';
-import 'package:procrastinator/main.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
