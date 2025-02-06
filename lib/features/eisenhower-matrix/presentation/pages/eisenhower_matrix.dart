@@ -25,8 +25,8 @@ class _EisenhowerMatrixState extends State<EisenhowerMatrix> {
     refreshTasks();
   }
 
-  void refreshTasks() {
-    getTasksBy(TasksQuery(
+  Future<void> refreshTasks() async {
+    await getTasksBy(TasksQuery(
             urgency: FieldQuery(Urgency.high, true),
             priority: FieldQuery(Priority.high, true)))
         .then((newTasks) {
@@ -35,7 +35,7 @@ class _EisenhowerMatrixState extends State<EisenhowerMatrix> {
       });
     });
 
-    getTasksBy(TasksQuery(
+    await getTasksBy(TasksQuery(
             urgency: FieldQuery(Urgency.high, false),
             priority: FieldQuery(Priority.high, true)))
         .then((newTasks) {
@@ -44,7 +44,7 @@ class _EisenhowerMatrixState extends State<EisenhowerMatrix> {
       });
     });
 
-    getTasksBy(TasksQuery(
+    await getTasksBy(TasksQuery(
             urgency: FieldQuery(Urgency.high, true),
             priority: FieldQuery(Priority.high, false)))
         .then((newTasks) {
@@ -53,7 +53,7 @@ class _EisenhowerMatrixState extends State<EisenhowerMatrix> {
       });
     });
 
-    getTasksBy(TasksQuery(
+    await getTasksBy(TasksQuery(
             urgency: FieldQuery(Urgency.high, false),
             priority: FieldQuery(Priority.high, false)))
         .then((newTasks) {

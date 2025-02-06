@@ -80,9 +80,21 @@ class Matrix extends StatelessWidget {
                       child: ClearTaskList(
                         tasks: entry["tasks"]
                             as List<Task>, // Adjust type as needed
-                        onCheck: (id, isCompleted) {},
-                        onDelete: (id) {},
-                        onUpdate: (id, task) {},
+                        onCheck: (id, isCompleted) {
+                          if (onCheck != null) {
+                            onCheck!(id, isCompleted);
+                          }
+                        },
+                        onDelete: (id) {
+                          if (onDelete != null) {
+                            onDelete!(id);
+                          }
+                        },
+                        onUpdate: (id, task) {
+                          if (onUpdate != null) {
+                            onUpdate!(id, task);
+                          }
+                        },
                       ),
                     ),
                   ],
