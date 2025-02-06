@@ -10,15 +10,16 @@ Future<void> saveTaskDB(TaskDatabase database, Task task) {
   return database.create(intoTaskModel(task));
 }
 
-Future<void> removeTask(Task task) {
-  return removeTaskDB(db, task);
+Future<void> removeTask(int id) {
+  return removeTaskDB(db, id);
 }
 
-Future<void> removeTaskDB(TaskDatabase database, Task task) {
-  return database.delete(task.id);
+Future<void> removeTaskDB(TaskDatabase database, int id) {
+  return database.delete(id);
 }
 
-Future<void> updateTask(Task task) {
+Future<void> updateTask(int id, Task task) {
+  task.id = id;
   return updateTaskDB(db, 'tasks', task);
 }
 
@@ -26,20 +27,20 @@ Future<void> updateTaskDB(TaskDatabase database, String table, Task task) {
   return database.update(intoTaskModel(task));
 }
 
-Future<void> completeTask(int taskID) {
-  return completeTaskDB(db, taskID);
+Future<void> completeTask(int id) {
+  return completeTaskDB(db, id);
 }
 
-Future<void> completeTaskDB(TaskDatabase database, int taskId) {
-  return database.complete(taskId);
+Future<void> completeTaskDB(TaskDatabase database, int id) {
+  return database.complete(id);
 }
 
-Future<void> removeTaskCompletion(int taskID) {
-  return removeTaskCompletionDB(db, taskID);
+Future<void> removeTaskCompletion(int id) {
+  return removeTaskCompletionDB(db, id);
 }
 
-Future<void> removeTaskCompletionDB(TaskDatabase database, int taskId) {
-  return database.uncomplete(taskId);
+Future<void> removeTaskCompletionDB(TaskDatabase database, int id) {
+  return database.uncomplete(id);
 }
 
 Future<List<Task>> getAllTasks() {
@@ -48,6 +49,14 @@ Future<List<Task>> getAllTasks() {
 
 Future<List<Task>> getAllTasksDB(TaskDatabase database) {
   return database.readAll().then((m) => m.map(fromTaskModel).toList());
+}
+
+Future<List<Task>> getTasksBy(TasksQuery query) {
+  return getTasksByDB(db, query);
+}
+
+Future<List<Task>> getTasksByDB(TaskDatabase database, TasksQuery query) {
+  return db.readTasksByQuery(query).then((m) => m.map(fromTaskModel).toList());
 }
 
 Task fromTaskModel(TaskModel model) {

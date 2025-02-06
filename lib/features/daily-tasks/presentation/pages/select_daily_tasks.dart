@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:procrastinator/features/daily-tasks/data/data_sources/daily_tasks.dart';
+import 'package:procrastinator/features/daily-tasks/domain/daily_tasks.dart';
 import 'package:procrastinator/features/daily-tasks/presentation/widgets/task_card_rounded.dart';
 import 'package:procrastinator/features/tasks/domain/sort_tasks_by.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
@@ -100,8 +100,11 @@ class _SelectDailyTasksState extends State<SelectDailyTasks> {
       ),
       floatingActionButton: TextButton.icon(
         onPressed: () async {
-          setDailyTasks(selectedIds);
-          Navigator.pop(context);
+          final currentContext = context;
+          await setDailyTasks(selectedIds);
+          if (currentContext.mounted) {
+            Navigator.pop(currentContext);
+          }
         },
         label: const Text(
           'Choose selected',

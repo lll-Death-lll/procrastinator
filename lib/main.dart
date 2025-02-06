@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:procrastinator/features/daily-tasks/presentation/pages/daily_tasks.dart';
+import 'package:procrastinator/features/eisenhower-matrix/presentation/pages/eisenhower_matrix.dart';
 import 'package:procrastinator/features/tasks/data/repository/database.dart';
 import 'package:procrastinator/features/tasks/presentation/pages/home.dart';
 
@@ -17,11 +18,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Procrastinator',
+      initialRoute: '/',
       routes: {
         '/': (context) => const SafeArea(
               child: Home(),
             ),
-        '/martix': (context) => Container(),
+        '/matrix': (context) => const SafeArea(
+              child: EisenhowerMatrix(),
+            ),
         '/daily': (context) => const SafeArea(child: DailyTasks()),
       },
     );

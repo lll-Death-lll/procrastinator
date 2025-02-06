@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:procrastinator/features/eisenhower-matrix/presentation/widgets/clear_task_card.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
-import 'package:procrastinator/features/tasks/presentation/widgets/task_card.dart';
 
-class TaskList extends StatelessWidget {
+class ClearTaskList extends StatelessWidget {
   final List<Task> tasks;
   final Function(int id, bool isCompleted)? onCheck;
   final Function(int id, Task task)? onUpdate;
   final Function(int id)? onDelete;
-  const TaskList(
+  const ClearTaskList(
       {super.key,
       required this.tasks,
       this.onCheck,
@@ -19,7 +19,7 @@ class TaskList extends StatelessWidget {
     return ListView.separated(
       itemCount: tasks.length,
       itemBuilder: (BuildContext context, int index) {
-        return TaskCard(
+        return ClearTaskCard(
           task: tasks[index],
           onUpdate: (Task task) {
             if (onUpdate != null) {

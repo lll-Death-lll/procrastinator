@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:procrastinator/features/daily-tasks/data/data_sources/daily_tasks.dart';
+import 'package:procrastinator/features/daily-tasks/domain/daily_tasks.dart';
 import 'package:procrastinator/features/daily-tasks/presentation/pages/select_daily_tasks.dart';
 import 'package:procrastinator/features/tasks/data/data_sources/task.dart';
 import 'package:procrastinator/features/tasks/domain/sort_tasks_by.dart';
@@ -121,12 +121,14 @@ class _DailyTasksState extends State<DailyTasks> {
               onPressed: () async {
                 var daily = tasks.map((t) => t.id).toSet();
                 var allTasks = await getAllTasks();
-                await Navigator.push(
-                    // ignore: use_build_context_synchronously
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SelectDailyTasks(
-                            tasks: allTasks, selected: daily)));
+                final currentContext = context;
+                if (currentContext.mounted) {
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SelectDailyTasks(
+                              tasks: allTasks, selected: daily)));
+                }
                 var newTasks = await getDailyTasks();
                 setState(() {
                   tasks = newTasks;
@@ -144,23 +146,23 @@ class _DailyTasksState extends State<DailyTasks> {
         padding: const EdgeInsets.all(8.0),
         child: TaskList(
           tasks: tasks,
-          onCheck: (index, completed) {
+          onCheck: (id, completed) async {
             if (completed) {
-              completeTask(tasks[index].id);
-              setState(() {
-                tasks[index].completedAt = DateTime.now();
-              });
+              completeTask(id);
             } else {
-              removeTaskCompletion(tasks[index].id);
-              setState(() {
-                tasks[index].completedAt = null;
-              });
+              removeTaskCompletion(id);
             }
-          },
-          onUpdate: (index, task) {
-            updateTask(task);
+
+            var newTasks = await getAllTasks();
             setState(() {
-              tasks[index] = task;
+              tasks = newTasks;
+            });
+          },
+          onUpdate: (id, task) async {
+            updateTask(id, task);
+            var newTasks = await getAllTasks();
+            setState(() {
+              tasks = newTasks;
             });
           },
         ),

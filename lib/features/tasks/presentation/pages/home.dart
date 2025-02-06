@@ -5,7 +5,6 @@ import 'package:procrastinator/features/tasks/data/data_sources/task.dart';
 import 'package:procrastinator/features/tasks/domain/task.dart';
 import 'package:procrastinator/features/tasks/presentation/widgets/task_list.dart';
 import 'package:procrastinator/features/tasks/presentation/widgets/task_sort.dart';
-import 'package:procrastinator/main.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,8 +19,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var newTasks = await getAllTasks();
+    getAllTasks().then((newTasks) {
       setState(() {
         tasks = newTasks;
       });
@@ -33,42 +31,55 @@ class _HomeState extends State<Home> {
     return Scaffold(
       drawer: Drawer(
         backgroundColor: Colors.grey[900],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton.icon(
+                    onPressed: () async {
+                      await Navigator.pushNamed(context, '/daily');
+                      var newTasks = await getAllTasks();
+                      setState(() {
+                        tasks = newTasks;
+                      });
+                    },
+                    label: Text(
+                      "Daily",
+                      style: TextStyle(color: Colors.white, fontSize: 24),
                     ),
-                    backgroundColor: Colors.amber,
-                    overlayColor: Colors.black),
-                onPressed: () async {
-                  await Navigator.pushNamed(context, '/daily');
-                  var newTasks = await getAllTasks();
-                  setState(() {
-                    tasks = newTasks;
-                  });
-                },
-                label: const Text(
-                  'Daily',
-                  style: TextStyle(color: Colors.white),
-                )),
-            ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+                    icon: Icon(
+                      Icons.sunny,
+                      size: 24,
+                      color: Colors.white,
                     ),
-                    backgroundColor: const Color.fromARGB(255, 255, 0, 0),
-                    overlayColor: Colors.black),
-                onPressed: () async {
-                  await db.resetDatabase();
-                },
-                label: const Text(
-                  'Reset Everything',
-                  style: TextStyle(color: Colors.white),
-                ))
-          ],
+                  ),
+                  SizedBox(height: 20),
+                  TextButton.icon(
+                    onPressed: () async {
+                      await Navigator.pushNamed(context, '/matrix');
+                      var newTasks = await getAllTasks();
+                      setState(() {
+                        tasks = newTasks;
+                      });
+                    },
+                    label: Text(
+                      "Matrix",
+                      style: TextStyle(color: Colors.white, fontSize: 24),
+                    ),
+                    icon: Icon(
+                      Icons.grid_view,
+                      size: 24,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       appBar: AppBar(
@@ -174,29 +185,30 @@ class _HomeState extends State<Home> {
         padding: const EdgeInsets.all(8.0),
         child: TaskList(
           tasks: tasks,
-          onCheck: (index, completed) {
+          onCheck: (id, completed) async {
             if (completed) {
-              completeTask(tasks[index].id);
-              setState(() {
-                tasks[index].completedAt = DateTime.now();
-              });
+              completeTask(id);
             } else {
-              removeTaskCompletion(tasks[index].id);
-              setState(() {
-                tasks[index].completedAt = null;
-              });
+              removeTaskCompletion(id);
             }
-          },
-          onUpdate: (index, task) {
-            updateTask(task);
+
+            var newTasks = await getAllTasks();
             setState(() {
-              tasks[index] = task;
+              tasks = newTasks;
             });
           },
-          onDelete: (index) {
-            removeTask(tasks[index]);
+          onUpdate: (id, task) async {
+            updateTask(id, task);
+            var newTasks = await getAllTasks();
             setState(() {
-              tasks.removeAt(index);
+              tasks = newTasks;
+            });
+          },
+          onDelete: (id) async {
+            removeTask(id);
+            var newTasks = await getAllTasks();
+            setState(() {
+              tasks = newTasks;
             });
           },
         ),
